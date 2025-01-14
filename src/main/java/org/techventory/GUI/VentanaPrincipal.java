@@ -5,15 +5,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class VentanaPrincipal extends JFrame {
-
     public VentanaPrincipal(){
 
-        // Configurar la ventana principal (esta misma instancia)
-        setTitle("Techventory");
-        setSize(400, 400); // Tamaño de la ventana
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centrar la ventana
-        setLayout(null); // Layout manual para control total
+        // Crear el marco principal
+        JFrame frame = new JFrame("Techventory");
+        frame.setSize(400, 400); // Tamaño de la ventana
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null); // Centrar la ventana
+
+        // Crear el panel principal con un diseño nulo
+        JPanel panel = new JPanel();
+        panel.setLayout(null); // Layout manual para control total
+        panel.setBackground(new Color(240, 240, 240)); // Fondo claro
+        frame.add(panel);
 
         // Crear botones para el menú principal
         JButton btnGestionMateriales = new JButton("Gestión de Materiales");
@@ -29,9 +33,12 @@ public class VentanaPrincipal extends JFrame {
         styleButton(btnGestionUsuarios); // Aplicar estilo
 
         // Agregar botones al panel
-        add(btnGestionMateriales);
-        add(btnGestionAsignaciones);
-        add(btnGestionUsuarios);
+        panel.add(btnGestionMateriales);
+        panel.add(btnGestionAsignaciones);
+        panel.add(btnGestionUsuarios);
+
+        //Mostrar el marco
+        frame.setVisible(true);
 
         //Eventos de los botones
         btnGestionMateriales.addActionListener(this::abrirMateriales);
@@ -43,7 +50,7 @@ public class VentanaPrincipal extends JFrame {
     private static void styleButton(JButton button) {
         button.setFont(new Font("Sans-serif", Font.BOLD, 16)); // Fuente y tamaño
         button.setBackground(new Color(193, 18, 31)); // Fondo Naranja
-        button.setForeground(Color.WHITE); // Texto blanco
+        button.setForeground(Color.WHITE); // Texto negro
         button.setFocusPainted(false); // Quitar el borde de foco
         button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Borde sutil
         button.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor a mano

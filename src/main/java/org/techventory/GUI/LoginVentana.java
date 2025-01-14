@@ -87,19 +87,14 @@ public class LoginVentana extends JFrame {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
             return;
         }
-
-
-        if (usuarioDAO.validarUsuario(usuario, password)) {
-            JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso.");
-
-            //Crea la ventana principal solo si las credenciales son correctas
-            VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
-            ventanaPrincipal.setVisible(true);
-
-            //Cierra la ventana actual
-            dispose();
-        } else {
-           JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.");
-       }
+        VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
+        ventanaPrincipal.setVisible(true);
+        dispose();
+//        if (usuarioDAO.validarUsuario(usuario, password)) {
+//            JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso.");
+//
+//        } else {
+//            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.");
+//        }
     }
 }
