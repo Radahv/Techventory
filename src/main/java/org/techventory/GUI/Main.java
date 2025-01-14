@@ -1,6 +1,4 @@
-package org.techventory.Main;
-
-import org.techventory.GUI.LoginVentana;
+package org.techventory.GUI;
 
 public class Main {
     public static void main(String[] args) {
