@@ -1,5 +1,7 @@
 package org.techventory.GUI;
 
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,6 +9,8 @@ import java.awt.event.ActionEvent;
 public class VentanaPrincipal extends JFrame {
 
     public VentanaPrincipal(){
+
+        FlatLightLaf.setup();
 
         // Configurar la ventana principal (esta misma instancia)
         setTitle("Techventory");

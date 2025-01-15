@@ -1,5 +1,8 @@
 package org.techventory.GUI;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import org.techventory.DAO.UsuarioDAO;
 
 import javax.swing.*;
@@ -14,6 +17,8 @@ public class LoginVentana extends JFrame {
 
     public LoginVentana(){
         usuarioDAO = new UsuarioDAO();
+
+        FlatLightLaf.setup();
 
         // Crear el marco principal
         JFrame frame = new JFrame("Techventory");
@@ -95,11 +100,13 @@ public class LoginVentana extends JFrame {
             //Crea la ventana principal solo si las credenciales son correctas
             VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
             ventanaPrincipal.setVisible(true);
-
-            //Cierra la ventana actual
-            dispose();
+            dispose();//Cierra la ventana actual
         } else {
            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.");
        }
+    }
+
+    public static void main(String[] args) {
+        new LoginVentana();
     }
 }
