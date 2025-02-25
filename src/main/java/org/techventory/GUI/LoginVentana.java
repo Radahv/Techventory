@@ -1,8 +1,5 @@
 package org.techventory.GUI;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 import org.techventory.DAO.UsuarioDAO;
 
 import javax.swing.*;
@@ -15,22 +12,20 @@ public class LoginVentana extends JFrame {
     private JPasswordField passwordText;
     private UsuarioDAO usuarioDAO;
 
-    public LoginVentana(){
+    public LoginVentana() {
         usuarioDAO = new UsuarioDAO();
 
-        FlatLightLaf.setup();
-
-        // Crear el marco principal
-        JFrame frame = new JFrame("Techventory");
-        frame.setSize(400, 300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null); // Centrar la ventana
+        // Configuración de la ventana principal
+        setTitle("Techventory - Inicio de Sesión");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Centrar la ventana
 
         // Crear el panel principal con un diseño
         JPanel panel = new JPanel();
         panel.setBackground(new Color(240, 240, 240)); // Fondo claro
         panel.setLayout(new GridBagLayout()); // Usar GridBagLayout para centrar elementos
-        frame.add(panel);
+        add(panel);
 
         // Configuración de GridBagConstraints
         GridBagConstraints gbc = new GridBagConstraints();
@@ -68,7 +63,7 @@ public class LoginVentana extends JFrame {
         // Botón "Iniciar Sesión"
         JButton loginButton = new JButton("Iniciar Sesión");
         loginButton.setFont(new Font("Sans-serif", Font.BOLD, 14));
-        loginButton.setBackground(new Color(193, 18, 31)); // Naranja
+        loginButton.setBackground(new Color(193, 18, 31)); // Rojo oscuro
         loginButton.setForeground(Color.WHITE); // Texto blanco
         loginButton.setFocusPainted(false);
         loginButton.setBorderPainted(false);
@@ -78,10 +73,11 @@ public class LoginVentana extends JFrame {
         gbc.gridwidth = 2; // Ocupar todo el ancho
         panel.add(loginButton, gbc);
 
-        // Mostrar el marco
-        frame.setVisible(true);
-
+        // Agregar acción al botón
         loginButton.addActionListener((ActionEvent e) -> iniciarSesion());
+
+        // Mostrar la ventana
+        setVisible(true);
     }
 
     private void iniciarSesion() {
@@ -93,20 +89,17 @@ public class LoginVentana extends JFrame {
             return;
         }
 
-
         if (usuarioDAO.validarUsuario(usuario, password)) {
             JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso.");
 
-            //Crea la ventana principal solo si las credenciales son correctas
-            VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
+            // Crea la ventana principal con el usuario logueado
+            VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(usuario);
             ventanaPrincipal.setVisible(true);
-            dispose();//Cierra la ventana actual
-        } else {
-           JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.");
-       }
-    }
 
-    public static void main(String[] args) {
-        new LoginVentana();
+            // Cierra la ventana de login
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.");
+        }
     }
 }

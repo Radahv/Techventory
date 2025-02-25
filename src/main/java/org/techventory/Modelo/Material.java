@@ -1,5 +1,7 @@
 package org.techventory.Modelo;
 
+import java.util.Arrays;
+
 public class Material {
     private int id;
     private String nombre;
@@ -63,5 +65,10 @@ public class Material {
 
     public void setDetalles(String detalles) {
         this.detalles = detalles;
+    }
+
+    @Override
+    public String toString() {
+        return nombre;
     }
 }

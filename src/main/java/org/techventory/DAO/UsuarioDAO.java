@@ -2,10 +2,9 @@ package org.techventory.DAO;
 
 import org.techventory.Modelo.Usuario;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
 
@@ -41,4 +40,25 @@ public class UsuarioDAO {
     }
 
 
+    public List<Usuario> obtenerUsuarios() {
+        String query = "SELECT * FROM usuarios";
+        List<Usuario> usuarios = new ArrayList<>();
+        try(Connection conn = ConexionDB.getConexion();
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(query)){
+            while(rs.next()){
+                Usuario usuario = new Usuario(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("email"),
+                        rs.getString("contrasena"),
+                        rs.getString("rol")
+                );
+                usuarios.add(usuario);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return usuarios;
+    }
 }
