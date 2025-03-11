@@ -1,47 +1,31 @@
 package org.techventory.DAO;
 
+import org.techventory.Modelo.Asignacion;
+
+import java.sql.*;
+
 public class AsignacionDAO {
-    private int id;
-    private int id_usuario;
-    private int id_material;
-    private int cantidad_asignada;
+    // Asignar material a un usuario
+    public boolean asignarMaterial(Asignacion asignacion) {
+        String query = "INSERT INTO asignaciones (id_usuario, id_inventario, cantidad_asignada) VALUES (?, ?, ?)";
+        String updateInventario = "UPDATE inventario SET cantidad = cantidad - ? WHERE id = ?";
+        try (Connection conn = ConexionDB.getConexion();
+             PreparedStatement stmtAsignacion = conn.prepareStatement(query);
+             PreparedStatement stmtUpdateInventario = conn.prepareStatement(updateInventario)) {
+            // Insertar en asignaciones
+            stmtAsignacion.setInt(1, asignacion.getId_usuario());
+            stmtAsignacion.setInt(2, asignacion.getId_inventario());
+            stmtAsignacion.setInt(3, asignacion.getCantidad_asignada());
+            stmtAsignacion.executeUpdate();
 
-    public AsignacionDAO(int id, int id_usuario, int id_material, int cantidad_asignada){
-        this.setId(id);
-        this.setId_usuario(id_usuario);
-        this.setId_material(id_material);
-        this.setCantidad_asignada(cantidad_asignada);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId_usuario() {
-        return id_usuario;
-    }
-
-    public void setId_usuario(int id_usuario) {
-        this.id_usuario = id_usuario;
-    }
-
-    public int getId_material() {
-        return id_material;
-    }
-
-    public void setId_material(int id_material) {
-        this.id_material = id_material;
-    }
-
-    public int getCantidad_asignada() {
-        return cantidad_asignada;
-    }
-
-    public void setCantidad_asignada(int cantidad_asignada) {
-        this.cantidad_asignada = cantidad_asignada;
+            // Actualizar inventario
+            stmtUpdateInventario.setInt(1, asignacion.getCantidad_asignada());
+            stmtUpdateInventario.setInt(2, asignacion.getId_inventario());
+            return stmtUpdateInventario.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
+
