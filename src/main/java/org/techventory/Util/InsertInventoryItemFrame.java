@@ -20,7 +20,7 @@ public class InsertInventoryItemFrame extends JFrame {
     private File imagenFile = null;
 
     public InsertInventoryItemFrame() {
-        setTitle("Insertar Nuevo Item de Inventario");
+        setTitle("Añadir nuevo");
         setSize(450, 350);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

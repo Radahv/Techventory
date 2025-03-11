@@ -5,7 +5,7 @@ import org.techventory.Util.FormularioAsignacion;
 import org.techventory.Util.InsertInventoryItemFrame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.Style;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -13,12 +13,12 @@ import java.sql.*;
 public class VentanaPrincipal extends JFrame {
     private String usuarioLogueado;
     private JTabbedPane tabbedPane;
-    private JTable tblInventario, tblUsuarios, tblAsignaciones;
-    private JButton btnNuevoItem, btnAsignacion, btnNuevoUsuario;
+    private JTable tblInventario, tblUsuarios, tblAsignaciones, tblPortatiles, tblMoviles;
+    private JButton btnNuevoItem, btnModificarItem, btnEliminarItem, btnAsignacion, btnNuevoUsuario;
 
     public VentanaPrincipal(String usuario) {
         this.usuarioLogueado = usuario;
-        setTitle("Inventario - Usuario: " + usuarioLogueado);
+        setTitle("Techventory - Usuario: " + usuarioLogueado);
         setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,9 +39,15 @@ public class VentanaPrincipal extends JFrame {
 
         // Panel de botones para inventario
         JPanel panelBotonesInventario = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btnNuevoItem = new JButton("Añadir Material");
+        btnNuevoItem = new JButton("Añadir");
+        btnEliminarItem = new JButton("Eliminar");
+        btnModificarItem = new JButton("Modificar");
         styleButton(btnNuevoItem);
+        styleButton(btnEliminarItem);
+        styleButton(btnModificarItem);
         panelBotonesInventario.add(btnNuevoItem);
+        panelBotonesInventario.add(btnEliminarItem);
+        panelBotonesInventario.add(btnModificarItem);
         panelInventario.add(panelBotonesInventario, BorderLayout.SOUTH);
 
         btnNuevoItem.addActionListener(e -> {
@@ -54,6 +60,10 @@ public class VentanaPrincipal extends JFrame {
             });
             insertFrame.setVisible(true);
         });
+
+        btnEliminarItem.addActionListener(e -> eliminarItem());
+        btnModificarItem.addActionListener(e -> modificarItem());
+
 
         // Panel de Usuarios
         JPanel panelUsuarios = new JPanel(new BorderLayout());
@@ -90,11 +100,28 @@ public class VentanaPrincipal extends JFrame {
             formularioAsignacion.setVisible(true);
         });
 
+        //panel de Portatiles
+        JPanel panelPortatiles = new JPanel(new BorderLayout());
+        tblPortatiles = new JTable();
+        panelPortatiles.add(new JScrollPane(tblPortatiles), BorderLayout.CENTER);
+
+        //Panel de botones para Portatiles
+
+
+        //Panel de Moviles
+        JPanel panelMoviles = new JPanel(new BorderLayout());
+        tblMoviles = new JTable();
+        panelMoviles.add(new JScrollPane(tblMoviles), BorderLayout.CENTER);
+
+        //Panel de botones  para Moviles
+
+
         // Agregar pestañas
         tabbedPane.addTab("Inventario", panelInventario);
         tabbedPane.addTab("Usuarios", panelUsuarios);
         tabbedPane.addTab("Asignaciones", panelAsignaciones);
-
+        tabbedPane.addTab("Portatiles", panelPortatiles);
+        tabbedPane.addTab("Móviles", panelMoviles);
         add(tabbedPane);
     }
 
@@ -109,8 +136,65 @@ public class VentanaPrincipal extends JFrame {
         button.setPreferredSize(new Dimension(200, 40)); // Tamaño uniforme para los botones
     }
 
+    private void eliminarItem(){
+        int filaSeleccionada = tblAsignaciones.getSelectedRow();
+        if (filaSeleccionada == -1){
+            JOptionPane.showMessageDialog(this, "Seleccione un material para eliminar");
+            return;
+        }
+        int id = (int) tblInventario.getValueAt(filaSeleccionada, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eleminar el elemento?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_NO_OPTION){
+            try(Connection con = ConexionDB.getConexion();
+            PreparedStatement ps = con.prepareStatement("DELETE FROM inventario WHERE id = ?")){
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                cargarDatosInventario();
+                JOptionPane.showMessageDialog(this,"Ítem eliminado correctamente");
+            }catch (SQLException ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al eliminar el ítem: " + ex.getMessage());
+            }
+        }
+    }
+
+    private void modificarItem(){
+        int filaSeleccionada = tblInventario.getSelectedRow();
+        if (filaSeleccionada == -1){
+            JOptionPane.showMessageDialog(this, "Selecciona un ítem para modificar");
+            return;
+        }
+
+        int id = (int) tblInventario.getValueAt(filaSeleccionada, 0);
+        String nombre = (String) tblInventario.getValueAt(filaSeleccionada, 1);
+        String tipo = (String) tblInventario.getValueAt(filaSeleccionada, 2);
+        int cantidad = (int) tblInventario.getValueAt(filaSeleccionada, 3);
+        String detalles = (String) tblInventario.getValueAt(filaSeleccionada, 5);
+
+        String nuevoNombre = JOptionPane.showInputDialog(this, "Nuevo nombre", nombre);
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) return;
+
+        try(Connection con = ConexionDB.getConexion();
+        PreparedStatement ps = con.prepareStatement("UPDATE inventario SET nombre = ? WHERE id = ?")){
+            ps.setString(1, nuevoNombre);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+            cargarDatosInventario();
+            JOptionPane.showMessageDialog(this, "Ítem modificado correctamente");
+        }catch (SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al modificar el ítem" + ex.getMessage());
+        }
+    }
+
+
     private void cargarDatosInventario() {
-        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Tipo", "Cantidad", "Imagen", "Detalles"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Nombre", "Tipo", "Cantidad", "Imagen", "Detalles"}, 0){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         try (Connection con = ConexionDB.getConexion();
              Statement st = con.createStatement();
              ResultSet rs = st.executeQuery("SELECT id, nombre, tipo, cantidad, imagen, detalles FROM inventario")) {
@@ -131,13 +215,35 @@ public class VentanaPrincipal extends JFrame {
             }
 
             tblInventario.setModel(model);
-            tblInventario.getColumnModel().getColumn(4).setCellRenderer(new BlobImageRenderer(150, 150));
+            tblInventario.getColumnModel().getColumn(4).setCellRenderer(new BlobImageRenderer(120, 120));
             tblInventario.setRowHeight(150);
-            tblInventario.getColumnModel().getColumn(4).setPreferredWidth(150);
+            tblInventario.getColumnModel().getColumn(4).setPreferredWidth(120);
+
+            tblInventario.getColumnModel().getColumn(5).setCellRenderer(new MultiLineCellRender());
+            tblInventario.getColumnModel().getColumn(5).setPreferredWidth(300);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al cargar inventario: " + ex.getMessage());
+        }
+    }
+
+    static class MultiLineCellRender extends JTextArea implements TableCellRenderer{
+        public MultiLineCellRender(){
+            setLineWrap(true);
+            setWrapStyleWord(true);
+            setOpaque(true);
+        }
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+            setText(value != null ? value.toString() : "");
+            setSize(table.getColumnModel().getColumn(column).getWidth(), getPreferredSize().height);
+
+            // Ajustar el alto de la fila automáticamente
+            if (table.getRowHeight(row) < getPreferredSize().height) {
+                table.setRowHeight(row, getPreferredSize().height);
+            }
+            return this;
         }
     }
 
