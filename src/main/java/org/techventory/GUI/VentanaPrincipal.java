@@ -1,13 +1,18 @@
 package org.techventory.GUI;
 import org.techventory.DAO.ConexionDB;
+import org.techventory.DAO.MaterialDAO;
+import org.techventory.Modelo.Material;
 import org.techventory.Util.BlobImageRenderer;
 import org.techventory.Util.FormularioAsignacion;
 import org.techventory.Util.InsertInventoryItemFrame;
+import org.techventory.Util.UpdateInventoryFrame;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.sql.*;
 
 public class VentanaPrincipal extends JFrame {
@@ -137,14 +142,14 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void eliminarItem(){
-        int filaSeleccionada = tblAsignaciones.getSelectedRow();
+        int filaSeleccionada = tblInventario.getSelectedRow();
         if (filaSeleccionada == -1){
             JOptionPane.showMessageDialog(this, "Seleccione un material para eliminar");
             return;
         }
         int id = (int) tblInventario.getValueAt(filaSeleccionada, 0);
         int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eleminar el elemento?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_NO_OPTION){
+        if (confirm == JOptionPane.YES_OPTION){
             try(Connection con = ConexionDB.getConexion();
             PreparedStatement ps = con.prepareStatement("DELETE FROM inventario WHERE id = ?")){
                 ps.setInt(1, id);
@@ -170,21 +175,16 @@ public class VentanaPrincipal extends JFrame {
         String tipo = (String) tblInventario.getValueAt(filaSeleccionada, 2);
         int cantidad = (int) tblInventario.getValueAt(filaSeleccionada, 3);
         String detalles = (String) tblInventario.getValueAt(filaSeleccionada, 5);
+        File imagenFile = null; // Si tienes la imagen guardada en el modelo, la pasas aquí
 
-        String nuevoNombre = JOptionPane.showInputDialog(this, "Nuevo nombre", nombre);
-        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) return;
+        // Crear el objeto Material con los nuevos datos
+        Material material = new Material(id, nombre, tipo, cantidad, null, detalles);
 
-        try(Connection con = ConexionDB.getConexion();
-        PreparedStatement ps = con.prepareStatement("UPDATE inventario SET nombre = ? WHERE id = ?")){
-            ps.setString(1, nuevoNombre);
-            ps.setInt(2, id);
-            ps.executeUpdate();
-            cargarDatosInventario();
-            JOptionPane.showMessageDialog(this, "Ítem modificado correctamente");
-        }catch (SQLException ex){
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al modificar el ítem" + ex.getMessage());
-        }
+        // Crear la instancia del formulario de actualización, pasando el material
+        UpdateInventoryFrame update = new UpdateInventoryFrame(material);
+
+        // Mostrar el formulario para modificar el ítem
+        update.setVisible(true);
     }
 
 

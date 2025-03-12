@@ -6,26 +6,35 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MaterialDAO {
-    // Crear un nuevo material
-    public boolean crearMaterial(Material material) {
-        String query = "INSERT INTO inventario (nombre, tipo, cantidad, imagen, detalles) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, material.getNombre());
-            stmt.setString(2, material.getTipo());
-            stmt.setInt(3, material.getCantidad());
-            stmt.setBytes(4, material.getImagen()); // Imagen como bytes
-            stmt.setString(5, material.getDetalles());
-            return stmt.executeUpdate() > 0;
+
+    //Insertar Material al inventario con imagen
+    public void insertarItemConImagen(Material material, File imagenFile) {
+        String sql = "INSERT INTO inventario (nombre, tipo, cantidad, imagen, detalles) VALUES (?, ?, ?, ?, ?)";
+        try (Connection con = ConexionDB.getConexion();
+             FileInputStream fis = new FileInputStream(imagenFile);
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, material.getNombre());
+            pst.setString(2, material.getTipo());
+            pst.setInt(3, material.getCantidad());
+            pst.setBinaryStream(4, fis, (int) imagenFile.length());
+            pst.setString(5, material.getDetalles());
+
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Item insertado correctamente.");
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Archivo no encontrado: " + e.getMessage());
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al insertar: " + e.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return false;
     }
 
     // Leer todos los materiales
@@ -52,40 +61,53 @@ public class MaterialDAO {
         return materiales;
     }
 
-    // Actualizar cantidad de un material
-    public boolean actualizarCantidad(int id, int nuevaCantidad) {
-        String query = "UPDATE inventario SET cantidad = ? WHERE id = ?";
-        try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, nuevaCantidad);
-            stmt.setInt(2, id);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void eliminarItem(int id){
+        String sql = "DELETE FROM inventario WHERE id = ?";
+        try (Connection con = ConexionDB.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)){
+            ps.setInt(1, id);
+            int filasAfectadad = ps.executeUpdate();
+            if (filasAfectadad > 0){
+                JOptionPane.showMessageDialog(null, "Item eliminado correctamnente.");
+            }else {
+                JOptionPane.showMessageDialog(null, "No se encontró el ítem a eliminar.");
+            }
+        }catch (SQLException exception){
+            JOptionPane.showMessageDialog(null, "Error al eliminar: " + exception.getMessage());
         }
-        return false;
     }
 
-    public void insertarItemConImagen(String nombre, String tipo, int cantidad, File imagenFile, String detalles) {
-        String sql = "INSERT INTO inventario (nombre, tipo, cantidad, imagen, detalles) VALUES (?, ?, ?, ?, ?)";
+    public void modificarItem(Material material, File imageFile){
+        String sql = "UPDATE inventario SET nombre = ?, tipo = ?, cantidad = ?, imagen = ?, detalles = ? WHERE id = ?";
         try (Connection con = ConexionDB.getConexion();
-             FileInputStream fis = new FileInputStream(imagenFile);
-             PreparedStatement pst = con.prepareStatement(sql)) {
+            PreparedStatement ps = con.prepareStatement(sql)){
+            ps.setString(1, material.getNombre());
+            ps.setString(2, material.getTipo());
+            ps.setInt(3, material.getCantidad());
 
-            pst.setString(1, nombre);
-            pst.setString(2, tipo);
-            pst.setInt(3, cantidad);
-            pst.setBinaryStream(4, fis, (int) imagenFile.length());
-            pst.setString(5, detalles);
+            //Si hay imagen nueva, la convertimos a bytes
+            if (imageFile != null){
+                FileInputStream fis = new FileInputStream(imageFile);
+                ps.setBinaryStream(4, fis, (int) imageFile.length());
+            }else {
+                ps.setNull(4, Types.BLOB); // Si no hay imagen nueva, se mantiene la actual
+            }
+            ps.setString(5, material.getDetalles());
+            ps.setInt(6, material.getId());
 
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Item insertado correctamente.");
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, "Archivo no encontrado: " + e.getMessage());
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al insertar: " + e.getMessage());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            int filasAfectadad = ps.executeUpdate();
+            if (filasAfectadad > 0){
+                JOptionPane.showMessageDialog(null, "Item actualizado correctamnente.");
+            }else {
+                JOptionPane.showMessageDialog(null, "No se encontró el ítem a actualizar.");
+            }
+
+        }catch (SQLException exception){
+            JOptionPane.showMessageDialog(null, "Error al actualizar: " + exception.getMessage());
+        }catch (FileNotFoundException exception){
+            JOptionPane.showMessageDialog(null, "Archivo no encontrado: " + exception.getMessage());
+        }catch (Exception exception){
+            exception.printStackTrace();
         }
     }
 }

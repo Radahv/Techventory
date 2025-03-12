@@ -5,10 +5,9 @@ import org.techventory.Modelo.Material;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 
-public class InsertInventoryItemFrame extends JFrame {
+public class UpdateInventoryFrame extends JFrame{
     private JTextField txtNombre;
     private JTextField txtTipo;
     private JTextField txtCantidad;
@@ -20,8 +19,8 @@ public class InsertInventoryItemFrame extends JFrame {
     // Variable para guardar el archivo de imagen seleccionado
     private File imagenFile = null;
 
-    public InsertInventoryItemFrame() {
-        setTitle("Añadir nuevo");
+    public UpdateInventoryFrame(Material material){
+        setTitle("");
         setSize(450, 350);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -153,7 +152,7 @@ public class InsertInventoryItemFrame extends JFrame {
 
         //Insertamos en la base de datos con imagen
         MaterialDAO dao = new MaterialDAO();
-        dao.insertarItemConImagen(material, imagenFile);
+        dao.modificarItem(material, imagenFile);
         limpiarCampos();
     }
 
@@ -166,4 +165,3 @@ public class InsertInventoryItemFrame extends JFrame {
         imagenFile = null;
     }
 }
-

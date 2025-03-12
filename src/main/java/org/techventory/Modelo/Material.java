@@ -1,7 +1,5 @@
 package org.techventory.Modelo;
 
-import java.util.Arrays;
-
 public class Material {
     private int id;
     private String nombre;
