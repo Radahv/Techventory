@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+import static org.techventory.Util.styles.styleButton;
+
 public class LoginVentana extends JFrame {
 
     private JTextField userText;
@@ -16,8 +18,11 @@ public class LoginVentana extends JFrame {
         usuarioDAO = new UsuarioDAO();
 
         // Configuración de la ventana principal
-        setTitle("Techventory - Inicio de Sesión");
-        setSize(400, 300);
+        setTitle("Techventory");
+        // 🔹 Cargar el icono desde recursos
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource("/iconos/alt-de-inventario.png"));
+        setIconImage(imageIcon.getImage());
+        setSize(500, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centrar la ventana
 
@@ -33,7 +38,11 @@ public class LoginVentana extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Etiqueta de "Usuario"
-        JLabel userLabel = new JLabel("Usuario:");
+        ImageIcon original = new ImageIcon(getClass().getResource("/iconos/circulo-de-usuario.png"));
+        Image img = original.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        ImageIcon iconoEscalado = new ImageIcon(img);
+
+        JLabel userLabel = new JLabel(iconoEscalado);
         userLabel.setFont(new Font("Sans-serif", Font.PLAIN, 14));
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -47,7 +56,10 @@ public class LoginVentana extends JFrame {
         panel.add(userText, gbc);
 
         // Etiqueta de "Contraseña"
-        JLabel passwordLabel = new JLabel("Contraseña:");
+        ImageIcon original1 = new ImageIcon(getClass().getResource("/iconos/cerrar.png"));
+        Image img1 = original1.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        ImageIcon iconoEscalado1 = new ImageIcon(img1);
+        JLabel passwordLabel = new JLabel(iconoEscalado1);
         passwordLabel.setFont(new Font("Sans-serif", Font.PLAIN, 14));
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -61,13 +73,14 @@ public class LoginVentana extends JFrame {
         panel.add(passwordText, gbc);
 
         // Botón "Iniciar Sesión"
-        JButton loginButton = new JButton("Iniciar Sesión");
-        loginButton.setFont(new Font("Sans-serif", Font.BOLD, 14));
-        loginButton.setBackground(new Color(193, 18, 31)); // Rojo oscuro
-        loginButton.setForeground(Color.WHITE); // Texto blanco
-        loginButton.setFocusPainted(false);
-        loginButton.setBorderPainted(false);
-        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        ImageIcon original2 = new ImageIcon(getClass().getResource("/iconos/acceso.png"));
+        Image img2 = original2.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        ImageIcon iconoEscalado2 = new ImageIcon(img2);
+
+        JButton loginButton = new JButton("Acceder");
+        loginButton.setIcon(iconoEscalado2);
+        loginButton.setHorizontalTextPosition(SwingConstants.LEFT);// Movemos el icono a la derecha del texto
+        styleButton(loginButton);
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2; // Ocupar todo el ancho

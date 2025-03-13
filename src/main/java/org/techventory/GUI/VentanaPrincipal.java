@@ -1,4 +1,5 @@
 package org.techventory.GUI;
+import com.formdev.flatlaf.FlatLightLaf;
 import org.techventory.DAO.ConexionDB;
 import org.techventory.DAO.MaterialDAO;
 import org.techventory.Modelo.Material;
@@ -8,12 +9,18 @@ import org.techventory.Util.InsertInventoryItemFrame;
 import org.techventory.Util.UpdateInventoryFrame;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.sql.*;
+
+import static org.techventory.Util.styles.styleButton;
+import static org.techventory.Util.styles.styleTable;
 
 public class VentanaPrincipal extends JFrame {
     private String usuarioLogueado;
@@ -32,6 +39,7 @@ public class VentanaPrincipal extends JFrame {
         cargarDatosInventario();
         cargarDatosUsuarios();
         cargarAsignaciones();
+
     }
 
     private void initComponents() {
@@ -40,10 +48,11 @@ public class VentanaPrincipal extends JFrame {
         // Panel de Inventario
         JPanel panelInventario = new JPanel(new BorderLayout());
         tblInventario = new JTable();
+        styleTable(tblInventario);
         panelInventario.add(new JScrollPane(tblInventario), BorderLayout.CENTER);
 
         // Panel de botones para inventario
-        JPanel panelBotonesInventario = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel panelBotonesInventario = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnNuevoItem = new JButton("Añadir");
         btnEliminarItem = new JButton("Eliminar");
         btnModificarItem = new JButton("Modificar");
@@ -128,17 +137,6 @@ public class VentanaPrincipal extends JFrame {
         tabbedPane.addTab("Portatiles", panelPortatiles);
         tabbedPane.addTab("Móviles", panelMoviles);
         add(tabbedPane);
-    }
-
-    // Método para dar estilo a los botones
-    private static void styleButton(JButton button) {
-        button.setFont(new Font("Sans-serif", Font.BOLD, 14)); // Fuente y tamaño
-        button.setBackground(new Color(193, 18, 31)); // Fondo naranja
-        button.setForeground(Color.WHITE); // Texto blanco
-        button.setFocusPainted(false); // Quitar el borde de foco
-        button.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)); // Borde sutil
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor a mano
-        button.setPreferredSize(new Dimension(200, 40)); // Tamaño uniforme para los botones
     }
 
     private void eliminarItem(){
