@@ -181,6 +181,15 @@ public class VentanaPrincipal extends JFrame {
         // Crear la instancia del formulario de actualización, pasando el material
         UpdateInventoryFrame update = new UpdateInventoryFrame(material);
 
+
+        // Agregar un listener para actualizar la tabla al cerrar la ventana
+        update.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                cargarDatosInventario(); // Recargar la tabla al cerrar
+            }
+        });
+
         // Mostrar el formulario para modificar el ítem
         update.setVisible(true);
     }

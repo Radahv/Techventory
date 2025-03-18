@@ -27,5 +27,9 @@ public class AsignacionDAO {
         }
         return false;
     }
+
+    public void cargarAsignaciones(Asignacion asignacion){
+
+    }
 }
 
