@@ -1,47 +1,82 @@
-Descripción del Funcionamiento de la Aplicación Techventory
-La aplicación de Techventory está diseñada para la gestión eficiente de los recursos y materiales del área de IT. 
-Está desarrollada en Java utilizando Swing para la interfaz gráfica y MySQL como base de datos, lo que asegura un almacenamiento confiable de los datos.
+# Techventory – IT Inventory Management System
 
-A continuación, se detalla el funcionamiento y características principales:
+Techventory is a Java-based inventory management application designed to efficiently manage IT resources and materials. 
+The system focuses on controlling equipment, devices, and assignments within an organization, providing secure access, 
+inventory tracking, and user management.
 
-Características de la Aplicación
+The application is built using Java, Swing for the desktop interface, and MySQL for reliable data persistence.
 
-    1. Acceso Restringido
-        Solo usuarios registrados en la base de datos pueden acceder a la aplicación mediante un sistema de login seguro.
-        Las contraseñas están protegidas utilizando técnicas de hashing para garantizar la seguridad.
-        El administrador tiene la capacidad de agregar o eliminar usuarios.
+---
 
-    2. Inventario de Materiales
-        Gestión completa de materiales, equipos, dispositivos de telefonía, entre otros recursos.
-        Cada material incluye información detallada como nombre, cantidad disponible y, opcionalmente, una imagen asociada.
-        Posibilidad de buscar materiales por nombre o filtrar por categorías.
-        Control automático del stock: al asignar un material, la cantidad disponible se ajusta automáticamente.
+## Tech Stack
+- Java
+- Java Swing
+- MySQL
+- JDBC
+- Maven
+- Git
 
-    3. Gestión de Usuarios
-        Permite registrar usuarios con información relevante como nombre, cargo y contacto.
-        Los usuarios pueden visualizar los materiales asignados a ellos y recibir notificaciones sobre nuevas entregas.
+---
 
-    4. Asignación de Materiales
-        Registro de entregas de materiales a usuarios específicos.
-        Validación para asegurar que la cantidad solicitada no supere la cantidad disponible en el inventario.
-        Historial de asignaciones para cada usuario, con la posibilidad de editar o eliminar registros.
+## Key Features
 
-    5. Compatibilidad Multiplataforma
-        La aplicación no requiere conexión a internet, pero está diseñada para ser compatible con cualquier equipo que tenga Java Runtime Environment (JRE) instalado.
+### Secure Authentication
+- Restricted access through a secure login system.
+- User credentials are protected using password hashing.
+- Admin users can create and remove application users.
 
-Flujo Básico de Uso
+### Inventory Management
+- Full management of IT materials such as equipment, devices, and phone assets.
+- Each inventory item includes name, available quantity, and optional image.
+- Search and filtering by name or category.
+- Automatic stock control when items are assigned to users.
 
-    1. Inicio de Sesión
-        El usuario ingresa su nombre de usuario y contraseña.
-        Si las credenciales son correctas, accede al panel principal.
+### User Management
+- User registration with relevant information (name, role, contact details).
+- Users can view assigned materials.
+- Assignment history tracking per user.
 
-    2. Gestión del Inventario
-        Desde el panel principal, el usuario puede visualizar, agregar o editar materiales en el inventario.
-        También puede ver imágenes asociadas y actualizar cantidades según sea necesario.
+### Material Assignment
+- Assignment of materials to specific users.
+- Validation to prevent assigning more items than available in stock.
+- Editable assignment records with full history tracking.
 
-    3. Asignación de Recursos
-        El usuario selecciona un material, elige el destinatario y define la cantidad a asignar.
-        La cantidad disponible del material se reduce automáticamente en el inventario.
+### Offline Desktop Application
+- No internet connection required.
+- Runs on any machine with Java Runtime Environment (JRE) installed.
 
-    4. Gestión de Usuarios
-        Permite agregar nuevos usuarios, asignarles materiales o eliminar registros de usuarios obsoletos.
+---
+
+## Application Workflow
+
+### Login
+- Users authenticate using username and password.
+- Upon successful authentication, users access the main dashboard.
+
+### Inventory Operations
+- View, add, edit, and manage inventory items.
+- Update quantities and view associated images.
+
+### Resource Assignment
+- Select a material, assign it to a user, and define the quantity.
+- Inventory stock is updated automatically.
+
+### User Administration
+- Add, update, or remove users.
+- Manage material assignments and user records.
+
+---
+
+## What I Learned
+- Designing desktop applications using Java and Swing.
+- Implementing secure authentication and password hashing.
+- Managing relational data using MySQL and JDBC.
+- Applying validation logic and inventory control rules.
+- Structuring Java applications for maintainability.
+
+---
+
+## Future Improvements
+- Migration to a RESTful backend using Spring Boot.
+- API-based architecture for web or mobile clients.
+- Role-based access control improvements.
